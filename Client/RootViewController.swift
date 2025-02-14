@@ -208,7 +208,22 @@ class RootViewController: UIViewController, UITextFieldDelegate {
 
         self.linkTextField.resignFirstResponder()
 
+        guard value.isValidURL, let url = URL(string: value, encodingInvalidCharacters: false) else {
+            self.showError(title: "Invalid url")
 
+            return
+        }
+
+        let miniAppController = MiniAppController(url: url)
+        self.present(miniAppController, animated: true)
+    }
+
+    private func showError(title: String) {
+        let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default))
+
+        self.present(alertController, animated: true)
     }
 
 }
