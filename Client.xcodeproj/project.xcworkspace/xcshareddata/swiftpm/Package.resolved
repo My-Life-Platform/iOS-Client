@@ -1,0 +1,15 @@
+{
+  "originHash" : "419988d898e9bed292519a382cff810586c31d7d26b5f2b4f337fc6e6cfa2d1c",
+  "pins" : [
+    {
+      "identity" : "pinlayout",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/layoutBox/PinLayout.git",
+      "state" : {
+        "revision" : "8eaa3a15e4dcabaca4c95aea4c0ff0c9b4a67213",
+        "version" : "1.10.5"
+      }
+    }
+  ],
+  "version" : 3
+}
