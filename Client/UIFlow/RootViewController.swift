@@ -128,8 +128,8 @@ class RootViewController: UIViewController, UITextFieldDelegate {
 
         container.addSubview(label)
 
-
         self.linkTextField.leftView = container
+        self.linkTextField.text = "https://chatty-telegram-bot.lovable.app/"
     }
 
     private func setUpModelDownloadedButton() {

@@ -26,7 +26,8 @@ struct Message: Codable {
 
     func dictionaryRepresentation() -> [String: String] {
         return [
-            self.role.rawValue: self.content
+            "role": self.role.rawValue,
+            "content": self.content
         ]
     }
 

@@ -93,7 +93,6 @@ final class ModelDownloadController: UIViewController {
 
                 DispatchQueue.main.async {
                     self.updateButton(isDownloading: false)
-                    self.downloadButton.isEnabled = false
                 }
             } catch {
                 DispatchQueue.main.async {

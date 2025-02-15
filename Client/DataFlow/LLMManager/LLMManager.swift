@@ -60,7 +60,7 @@ final class LLMManager {
 
     private let generateParameters = GenerateParameters(temperature: 0.5)
 
-    private let maxTokens = 4096
+    private let maxTokens = 500
 
     init() {
         let isModelInstalled = UserDefaults.standard.bool(forKey: Self.modelInstalledKey)
@@ -107,7 +107,7 @@ final class LLMManager {
         }
     }
 
-    func generate(modelName: String, history: [[String: String]]) async -> String {
+    func generate(history: [[String: String]]) async -> String {
         do {
             let modelContainer = try await self.loadModel()
 
