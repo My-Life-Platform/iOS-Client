@@ -13,4 +13,5 @@ class WeakScriptMessageHandler: NSObject, WKScriptMessageHandler {
     func userContentController(_ controller: WKUserContentController, didReceive scriptMessage: WKScriptMessage) {
         self.handler(scriptMessage)
     }
+    
 }

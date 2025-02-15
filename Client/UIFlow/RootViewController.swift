@@ -28,6 +28,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.setUpContinueButton()
 
         self.observeKeyboard()
+        self.updateContinueButton(with: self.linkTextField.text?.isEmpty == false, animated: true)
     }
 
     override func viewDidAppear(_ animated: Bool) {

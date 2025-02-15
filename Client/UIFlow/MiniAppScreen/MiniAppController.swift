@@ -125,6 +125,7 @@ final class MiniAppController: UIViewController {
     func sendEvent(name: String, data: String?) {
         let script = "window.MyLife.WebView.receiveEvent(\"\(name)\", \(data ?? "null"))"
 
+        // async-await implementation crashes lol
         self.webView.evaluateJavaScript(script) { _, _ in
 
         }

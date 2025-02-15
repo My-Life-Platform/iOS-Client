@@ -10,6 +10,7 @@ final class MiniAppConversationProvider {
 
     private let decoder = JSONDecoder()
 
+    // forgive me
     static let shared = MiniAppConversationProvider()
 
     func saveHistory(for appId: String, messages: [Message]) throws {
