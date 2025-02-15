@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F43A23EE2D5FE43300C25764 /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = F43A23ED2D5FE43300C25764 /* PinLayout */; };
+		F46E96142D5FF26E008ADEBB /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = F46E96132D5FF26E008ADEBB /* MLXLLM */; };
+		F46E96162D5FF26E008ADEBB /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = F46E96152D5FF26E008ADEBB /* MLXLMCommon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +42,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F46E96142D5FF26E008ADEBB /* MLXLLM in Frameworks */,
+				F46E96162D5FF26E008ADEBB /* MLXLMCommon in Frameworks */,
 				F43A23EE2D5FE43300C25764 /* PinLayout in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,6 +88,8 @@
 			name = Client;
 			packageProductDependencies = (
 				F43A23ED2D5FE43300C25764 /* PinLayout */,
+				F46E96132D5FF26E008ADEBB /* MLXLLM */,
+				F46E96152D5FF26E008ADEBB /* MLXLMCommon */,
 			);
 			productName = Client;
 			productReference = F43A239D2D5FE1F600C25764 /* Client.app */;
@@ -115,6 +121,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F43A23EC2D5FE43300C25764 /* XCRemoteSwiftPackageReference "PinLayout" */,
+				F46E96122D5FF26E008ADEBB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F43A239E2D5FE1F600C25764 /* Products */;
@@ -161,6 +168,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -188,6 +196,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -352,6 +361,14 @@
 				minimumVersion = 1.10.5;
 			};
 		};
+		F46E96122D5FF26E008ADEBB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.21.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -359,6 +376,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F43A23EC2D5FE43300C25764 /* XCRemoteSwiftPackageReference "PinLayout" */;
 			productName = PinLayout;
+		};
+		F46E96132D5FF26E008ADEBB /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F46E96122D5FF26E008ADEBB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLLM;
+		};
+		F46E96152D5FF26E008ADEBB /* MLXLMCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F46E96122D5FF26E008ADEBB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLMCommon;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

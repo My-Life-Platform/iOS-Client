@@ -111,9 +111,12 @@ class RootViewController: UIViewController, UITextFieldDelegate {
             )
         )
 
-        let attachment = NSTextAttachment(image: UIImage(systemName: "paperclip")!)
+        let textAttachment = NSTextAttachment(image: UIImage(systemName: "paperclip")!)
+        let attributedText = NSMutableAttributedString()
+        attributedText.append(NSAttributedString(attachment: textAttachment))
+        attributedText.addAttributes(typingAttributes, range: NSRange(location: 0, length: attributedText.length))
 
-        label.attributedText = NSAttributedString(attachment: attachment, attributes: typingAttributes)
+        label.attributedText = attributedText
 
         container.addSubview(label)
 
@@ -208,7 +211,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
 
         self.linkTextField.resignFirstResponder()
 
-        guard value.isValidURL, let url = URL(string: value, encodingInvalidCharacters: false) else {
+        guard value.isValidURL, let url = URL(string: value) else {
             self.showError(title: "Invalid url")
 
             return
