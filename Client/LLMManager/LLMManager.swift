@@ -9,6 +9,9 @@ final class LLMManager {
 
     private static let modelInstalledKey = "my.life.modelInstalled"
 
+    // forgive me for now
+    static let shared = LLMManager()
+
     private(set) var isModelInstalled: Bool {
         get {
             self.isModelInstalledSubject.value
@@ -31,7 +34,7 @@ final class LLMManager {
         }
     }
 
-    private(set) var downloadProgress: Double {
+    private(set) var downloadProgress: Float {
         get {
             self.downloadProgressSubject.value
         }
@@ -45,13 +48,13 @@ final class LLMManager {
 
     let statePublisher: AnyPublisher<LLMManagerState, Never>
 
-    let downloadProgressPublisher: AnyPublisher<Double, Never>
+    let downloadProgressPublisher: AnyPublisher<Float, Never>
 
     private let isModelInstalledSubject: CurrentValueSubject<Bool, Never>
 
     private let stateSubject: CurrentValueSubject<LLMManagerState, Never>
 
-    private let downloadProgressSubject: CurrentValueSubject<Double, Never>
+    private let downloadProgressSubject: CurrentValueSubject<Float, Never>
 
     private let syncQueue = DispatchQueue(label: "LLMManager")
 
@@ -70,11 +73,12 @@ final class LLMManager {
         self.stateSubject = stateSubject
         self.statePublisher = stateSubject.eraseToAnyPublisher()
 
-        let downloadProgressSubject = CurrentValueSubject<Double, Never>(isModelInstalled ? 100 : 0)
+        let downloadProgressSubject = CurrentValueSubject<Float, Never>(isModelInstalled ? 100 : 0)
         self.downloadProgressSubject = downloadProgressSubject
         self.downloadProgressPublisher = downloadProgressSubject.eraseToAnyPublisher()
     }
 
+    @discardableResult
     func loadModel() async throws -> ModelContainer {
         let model = ModelConfiguration.llama_3_2_3b_4bit
 
@@ -88,11 +92,12 @@ final class LLMManager {
                 }
 
                 self.syncQueue.async {
-                    self.downloadProgress = progress.fractionCompleted
+                    self.downloadProgress = Float(progress.fractionCompleted)
                 }
             }
 
             self.syncQueue.async {
+                self.isModelInstalled = true
                 self.state = .loaded(modelContainer)
             }
 
@@ -111,8 +116,6 @@ final class LLMManager {
             let maxTokens = self.maxTokens
 
             MLXRandom.seed(UInt64(Date.timeIntervalSinceReferenceDate * 1000))
-
-            let lock = NSLock()
 
             let result = try await modelContainer.perform { context in
                 let input = try await context.processor.prepare(input: .init(messages: history))

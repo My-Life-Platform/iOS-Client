@@ -10,6 +10,8 @@ class RootViewController: UIViewController, UITextFieldDelegate {
 
     private let linkTextField = UITextField(frame: .zero)
 
+    private let modelDownloadedButton = UIButton(frame: .zero)
+
     private let continueButton = UIButton(frame: .zero)
 
     override func viewDidLoad() {
@@ -18,9 +20,11 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.view.backgroundColor = UIColor.systemBackground
 
         self.view.addSubview(self.linkTextField)
+        self.view.addSubview(self.modelDownloadedButton)
         self.view.addSubview(self.continueButton)
 
         self.setUpLinkTextField()
+        self.setUpModelDownloadedButton()
         self.setUpContinueButton()
 
         self.observeKeyboard()
@@ -39,8 +43,13 @@ class RootViewController: UIViewController, UITextFieldDelegate {
 
         self.linkTextField.pin
             .horizontally(baseMargin)
-            .vCenter(-baseMargin)
+            .vCenter(-baseMargin * 4)
             .height(54)
+
+        self.modelDownloadedButton.pin
+            .below(of: self.linkTextField, aligned: .center)
+            .marginTop(16)
+            .sizeToFit()
 
         if let keyboardHeight {
             self.continueButton.pin
@@ -90,7 +99,6 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.linkTextField.autocorrectionType = .no
         self.linkTextField.autocapitalizationType = .none
         self.linkTextField.typingAttributes = typingAttributes
-        self.linkTextField.tintColor = UIColor.systemBackground
         self.linkTextField.backgroundColor = UIColor.systemGray6
         self.linkTextField.layer.cornerRadius = 14
         self.linkTextField.leftViewMode = .always
@@ -124,11 +132,53 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.linkTextField.leftView = container
     }
 
+    private func setUpModelDownloadedButton() {
+        let update: (_ isModelInstalled: Bool) -> Void = { [weak self] isModelInstalled in
+            guard let self, var config = self.modelDownloadedButton.configuration else {
+                return
+            }
+
+            let text = isModelInstalled ? "Model is installed" : "Model is not installed"
+
+            config.attributedTitle = AttributedString(text, attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 17, weight: .semibold).rounded(),
+                .kern: -0.4,
+                .foregroundColor: UIColor.white
+            ]))
+
+            let color = isModelInstalled ? UIColor.systemGreen : UIColor.systemRed
+            config.baseForegroundColor = color
+            config.baseBackgroundColor = color
+
+            let image = isModelInstalled ? UIImage(systemName: "checkmark.circle.fill") : UIImage(systemName: "xmark.circle.fill")
+            config.image = image
+            config.imagePadding = 6
+
+            self.modelDownloadedButton.configuration = config
+        }
+
+        var configuration = UIButton.Configuration.tinted()
+        configuration.buttonSize = .large
+        configuration.cornerStyle = .large
+
+        self.modelDownloadedButton.configuration = configuration
+        self.modelDownloadedButton.addTarget(self, action: #selector(modelDownloadButtonDidTapped(_:)), for: .touchUpInside)
+
+        LLMManager.shared.isModelInstalledPublisher
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { isModelInstalled in
+                update(isModelInstalled)
+            }
+            .store(in: &self.cancellables)
+
+        update(LLMManager.shared.isModelInstalled)
+    }
+
     private func setUpContinueButton() {
         var configuration = UIButton.Configuration.filled()
         configuration.buttonSize = .large
         configuration.cornerStyle = .large
-        configuration.title = "Open MiniApp"
         configuration.attributedTitle = AttributedString("Open MiniApp", attributes: AttributeContainer([
             .font: UIFont.systemFont(ofSize: 17, weight: .semibold).rounded(),
             .kern: -0.4,
@@ -136,7 +186,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         ]))
 
         self.continueButton.configuration = configuration
-        self.continueButton.addTarget(self, action: #selector(buttonDidTapped(_:)), for: .touchUpInside)
+        self.continueButton.addTarget(self, action: #selector(continueButtonDidTapped(_:)), for: .touchUpInside)
 
         self.updateContinueButton(with: false, animated: true)
     }
@@ -200,8 +250,19 @@ class RootViewController: UIViewController, UITextFieldDelegate {
     }
 
     @objc
-    private func buttonDidTapped(_ button: UIButton) {
+    private func continueButtonDidTapped(_ button: UIButton) {
         self.didEnter()
+    }
+
+    @objc
+    private func modelDownloadButtonDidTapped(_ button: UIButton) {
+        guard !LLMManager.shared.isModelInstalled else {
+            self.showAlert(title: "Model already installed")
+
+            return
+        }
+
+        self.present(ModelDownloadController(), animated: true)
     }
 
     private func didEnter() {
@@ -212,21 +273,13 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.linkTextField.resignFirstResponder()
 
         guard value.isValidURL, let url = URL(string: value) else {
-            self.showError(title: "Invalid url")
+            self.showAlert(title: "Error", message: "Invalid url")
 
             return
         }
 
         let miniAppController = MiniAppController(url: url)
         self.present(miniAppController, animated: true)
-    }
-
-    private func showError(title: String) {
-        let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
-
-        alertController.addAction(UIAlertAction(title: "Ok", style: .default))
-
-        self.present(alertController, animated: true)
     }
 
 }
