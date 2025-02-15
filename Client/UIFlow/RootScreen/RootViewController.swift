@@ -8,6 +8,8 @@ class RootViewController: UIViewController, UITextFieldDelegate {
 
     private var keyboardHeight: CGFloat?
 
+    private let tapGestureRecognizer = UITapGestureRecognizer()
+
     private let linkTextField = UITextField(frame: .zero)
 
     private let modelDownloadedButton = UIButton(frame: .zero)
@@ -22,19 +24,15 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(self.linkTextField)
         self.view.addSubview(self.modelDownloadedButton)
         self.view.addSubview(self.continueButton)
+        self.view.addGestureRecognizer(self.tapGestureRecognizer)
 
         self.setUpLinkTextField()
         self.setUpModelDownloadedButton()
         self.setUpContinueButton()
+        self.setUpTapGestureRecognizer()
 
         self.observeKeyboard()
         self.updateContinueButton(with: self.linkTextField.text?.isEmpty == false, animated: true)
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        self.linkTextField.becomeFirstResponder()
     }
 
     override func viewDidLayoutSubviews() {
@@ -70,7 +68,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        self.linkTextField.resignFirstResponder()
+        self.view.endEditing(true)
     }
 
     // MARK: - UITextFieldDelegate
@@ -120,7 +118,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
             )
         )
 
-        let textAttachment = NSTextAttachment(image: UIImage(systemName: "paperclip")!)
+        let textAttachment = NSTextAttachment(image: UIImage(systemName: "link")!)
         let attributedText = NSMutableAttributedString()
         attributedText.append(NSAttributedString(attachment: textAttachment))
         attributedText.addAttributes(typingAttributes, range: NSRange(location: 0, length: attributedText.length))
@@ -163,7 +161,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         configuration.cornerStyle = .large
 
         self.modelDownloadedButton.configuration = configuration
-        self.modelDownloadedButton.addTarget(self, action: #selector(modelDownloadButtonDidTapped(_:)), for: .touchUpInside)
+        self.modelDownloadedButton.addTarget(self, action: #selector(self.modelDownloadButtonDidTapped(_:)), for: .touchUpInside)
 
         LLMManager.shared.isModelInstalledPublisher
             .dropFirst()
@@ -187,9 +185,13 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         ]))
 
         self.continueButton.configuration = configuration
-        self.continueButton.addTarget(self, action: #selector(continueButtonDidTapped(_:)), for: .touchUpInside)
+        self.continueButton.addTarget(self, action: #selector(self.continueButtonDidTapped(_:)), for: .touchUpInside)
 
         self.updateContinueButton(with: false, animated: true)
+    }
+
+    private func setUpTapGestureRecognizer() {
+        self.tapGestureRecognizer.addTarget(self, action: #selector(self.tapGestureRecognizerDidTriggered(_:)))
     }
 
     private func observeKeyboard() {
@@ -266,12 +268,17 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         self.present(ModelDownloadController(), animated: true)
     }
 
+    @objc
+    private func tapGestureRecognizerDidTriggered(_ tapGestureRecognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+
     private func didEnter() {
         guard let value = self.linkTextField.text else {
             return
         }
 
-        self.linkTextField.resignFirstResponder()
+        self.view.endEditing(true)
 
         guard value.isValidURL, let url = URL(string: value) else {
             self.showAlert(title: "Error", message: "Invalid url")
