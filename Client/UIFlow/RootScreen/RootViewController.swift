@@ -4,6 +4,8 @@ import Combine
 
 class RootViewController: UIViewController, UITextFieldDelegate {
 
+    private static let baseMiniAppLink = "https://chat-mini-app-example.lovable.app"
+
     private var cancellables = Set<AnyCancellable>()
 
     private var keyboardHeight: CGFloat?
@@ -128,7 +130,7 @@ class RootViewController: UIViewController, UITextFieldDelegate {
         container.addSubview(label)
 
         self.linkTextField.leftView = container
-        self.linkTextField.text = "https://chatty-telegram-bot.lovable.app/"
+        self.linkTextField.text = Self.baseMiniAppLink
     }
 
     private func setUpModelDownloadedButton() {
